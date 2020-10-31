@@ -2,14 +2,28 @@ import java.util.Scanner;
 
 public class Sudoku {
 
-  enum Difficulty{EASY, MEDIUM, HARD, EXPERT, IMPOSSIBLE}
+  public enum Difficulty {
+    EASY(20),
+    MEDIUM(30),
+    HARD(40),
+    EXPERT(50),
+    IMPOSSIBLE(60);
+
+    private int numberToRemove;
+    Difficulty(int numberToRemove) {
+      this.numberToRemove = numberToRemove;
+    }
+
+    private int getNumberToRemove(){
+      return numberToRemove;
+    }
+  }
 
   private static final int SIZE = 9;
   private static final int SQRT = (int) Math.sqrt(SIZE);
-  private int board[][] = new int[SIZE][SIZE];
-  private Difficulty difficulty;
+  private final int[][] board = new int[SIZE][SIZE];
+  private final Difficulty difficulty;
 
-  int K; // to add to difficulty
   // Constructor
   public Sudoku() {
     for (int i = 0; i < SIZE; i++) {
@@ -20,38 +34,20 @@ public class Sudoku {
     Scanner scanner = new Scanner(System.in);
 
     System.out.println("Pick a difficulty");
-    String input= scanner.next().toUpperCase();
-    while(!isValidDifficulty(input)){
+    String input = scanner.next().toUpperCase();
+    while (!isValidDifficulty(input)) {
       System.out.println("That isn't a difficulty, try again");
       input = scanner.next().toUpperCase();
     }
     difficulty = Difficulty.valueOf(input);
 
-//    // Compute square root of SIZE
-//    Double SQRTd = Math.sqrt(SIZE);
-//    SQRT = SQRTd.intValue();
-//
-//    board = new int[SIZE][SIZE];
   }
 
   private boolean isValidDifficulty(String input) {
     return (input.equals("EASY") || input.equals("MEDIUM") ||
-            input.equals("HARD") || input.equals("EXPERT") ||
-            input.equals("IMPOSSIBLE"));
+        input.equals("HARD") || input.equals("EXPERT") ||
+        input.equals("IMPOSSIBLE"));
   }
-  // generate a completely solved sudoku board
-
-
-//  public void initialise() {
-//
-//    // set all values of puzzle to 0
-//    // 0 denotes an empty square
-//    for (int i = 0; i < SIZE; i++) {
-//      for (int j = 0; j < SIZE; j++) {
-//        board[i][j] = 0;
-//      }
-//    }
-//  }
 
   public void print() {
 
@@ -86,14 +82,14 @@ public class Sudoku {
     // Fill remaining blocks
     fillRemainingBox(0, SQRT);
 
-    // Remove Randomly K digits to make game
-    removeKDigits();
+    // Randomly remove digits to make game
+    removeDigits();
   }
 
   // Fill the diagonals numbers of a box
   void fillBoxDiagonal() {
 
-    for (int i = 0; i < SIZE; i = i + SQRT){
+    for (int i = 0; i < SIZE; i = i + SQRT) {
       fillBox(i, i);
     }
   }
@@ -118,7 +114,7 @@ public class Sudoku {
       for (int j = 0; j < SQRT; j++) {
         do {
           num = randomGenerator(SIZE);
-        }while (!unusedInBox(row, col, num));
+        } while (!unusedInBox(row, col, num));
 
         board[row + i][col + j] = num;
       }
@@ -172,7 +168,7 @@ public class Sudoku {
         j = SQRT;
       }
     } else if (i < SIZE - SQRT) {
-      if (j == (int) (i / SQRT) * SQRT) {
+      if (j == (i / SQRT) * SQRT) {
         j = j + SQRT;
       }
     } else {
@@ -199,8 +195,8 @@ public class Sudoku {
 
   // Remove the K no. of digits to
   // complete game
-  public void removeKDigits() {
-    int count = K;
+  public void removeDigits() {
+    int count = difficulty.getNumberToRemove();
     while (count != 0) {
       int cellId = randomGenerator(SIZE * SIZE);
 
@@ -223,7 +219,6 @@ public class Sudoku {
 
   // Driver code
   public static void main(String[] args) {
-    int SIZE = 9, K = 20;
     Sudoku sudoku = new Sudoku();
     sudoku.generate();
     sudoku.print();
