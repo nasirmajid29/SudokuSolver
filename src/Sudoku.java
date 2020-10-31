@@ -1,24 +1,43 @@
+import java.util.Scanner;
+
 public class Sudoku {
+
+  enum Difficulty{EASY, MEDIUM, HARD, EXPERT, IMPOSSIBLE}
 
   private static final int SIZE = 9;
   private static final int SQRT = (int) Math.sqrt(SIZE);
   private int board[][] = new int[SIZE][SIZE];
+  private Difficulty difficulty;
 
-
-  int K; // SIZEo. Of missing digits
-
+  int K; // to add to difficulty
   // Constructor
-  Sudoku() {
+  public Sudoku() {
     for (int i = 0; i < SIZE; i++) {
       for (int j = 0; j < SIZE; j++) {
         board[i][j] = 0;
       }
     }
+    Scanner scanner = new Scanner(System.in);
+
+    System.out.println("Pick a difficulty");
+    String input= scanner.next().toUpperCase();
+    while(!isValidDifficulty(input)){
+      System.out.println("That isn't a difficulty, try again");
+      input = scanner.next().toUpperCase();
+    }
+    difficulty = Difficulty.valueOf(input);
+
 //    // Compute square root of SIZE
 //    Double SQRTd = Math.sqrt(SIZE);
 //    SQRT = SQRTd.intValue();
 //
 //    board = new int[SIZE][SIZE];
+  }
+
+  private boolean isValidDifficulty(String input) {
+    return (input.equals("EASY") || input.equals("MEDIUM") ||
+            input.equals("HARD") || input.equals("EXPERT") ||
+            input.equals("IMPOSSIBLE"));
   }
   // generate a completely solved sudoku board
 
@@ -61,7 +80,7 @@ public class Sudoku {
 
   // Sudoku Generator
   public void generate() {
-    // Fill the diagonal of SQRT x SQRT boardrices
+    // Fill the boxes on the diagonal
     fillBoxDiagonal();
 
     // Fill remaining blocks
@@ -92,7 +111,7 @@ public class Sudoku {
     return true;
   }
 
-  // Fill a 3 x 3 boardrix.
+  // Fill a 3 x 3 box.
   void fillBox(int row, int col) {
     int num;
     for (int i = 0; i < SQRT; i++) {
@@ -138,12 +157,10 @@ public class Sudoku {
     return true;
   }
 
-  // A recursive function to fill remaining
-  // boardrix
+  // A recursive function to fill remaining box
   boolean fillRemainingBox(int i, int j) {
-    //  System.out.println(i+" "+j);
     if (j >= SIZE && i < SIZE - 1) {
-      i = i + 1;
+      i++;
       j = 0;
     }
     if (i >= SIZE && j >= SIZE) {
@@ -167,7 +184,6 @@ public class Sudoku {
         }
       }
     }
-
     for (int num = 1; num <= SIZE; num++) {
       if (CheckIfSafe(i, j, num)) {
         board[i][j] = num;
@@ -215,3 +231,4 @@ public class Sudoku {
   }
 
 }
+
