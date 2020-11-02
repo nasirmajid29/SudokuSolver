@@ -9,7 +9,7 @@ public class Sudoku {
     EXPERT(50),
     IMPOSSIBLE(60);
 
-    private int numberToRemove;
+    private final int numberToRemove;
     Difficulty(int numberToRemove) {
       this.numberToRemove = numberToRemove;
     }
@@ -61,7 +61,11 @@ public class Sudoku {
         if (j % Math.sqrt(SIZE) == 0) {
           System.out.print(" |");
         }
-        System.out.print(" " + board[i][j]);
+        if(board[i][j] != 0) {
+          System.out.print(" " + board[i][j]);
+        }else{
+          System.out.print("  ");
+        }
         if (j == SIZE - 1) {
           System.out.print(" |");
         }
@@ -128,13 +132,13 @@ public class Sudoku {
 
   // Check if safe to put in cell
   boolean CheckIfSafe(int i, int j, int num) {
-    return (unUsedInRow(i, num) &&
-        unUsedInCol(j, num) &&
+    return (unusedInRow(i, num) &&
+        unusedInCol(j, num) &&
         unusedInBox(i - i % SQRT, j - j % SQRT, num));
   }
 
   // check in the row for existence
-  boolean unUsedInRow(int i, int num) {
+  boolean unusedInRow(int i, int num) {
     for (int j = 0; j < SIZE; j++) {
       if (board[i][j] == num) {
         return false;
@@ -144,7 +148,7 @@ public class Sudoku {
   }
 
   // check in the row for existence
-  boolean unUsedInCol(int j, int num) {
+  boolean unusedInCol(int j, int num) {
     for (int i = 0; i < SIZE; i++) {
       if (board[i][j] == num) {
         return false;
