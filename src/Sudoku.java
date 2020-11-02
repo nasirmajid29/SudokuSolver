@@ -1,4 +1,5 @@
 import java.util.Scanner;
+import java.util.SimpleTimeZone;
 
 public class Sudoku {
 
@@ -40,7 +41,6 @@ public class Sudoku {
       input = scanner.next().toUpperCase();
     }
     difficulty = Difficulty.valueOf(input);
-
   }
 
   private boolean isValidDifficulty(String input) {
@@ -207,10 +207,11 @@ public class Sudoku {
       // System.out.println(cellId);
       // extract coordinates i  and j
       int i = (cellId / SIZE);
-      int j = cellId % 9;
-      if (j != 0) {
-        j = j - 1;
+      if(i == SIZE){
+        i--;
       }
+      int j = cellId % 9;
+
 
       // System.out.println(i+" "+j);
       if (board[i][j] != 0) {
@@ -220,6 +221,35 @@ public class Sudoku {
     }
   }
 
+  public boolean solve() {
+    for (int row = 0; row < SIZE; row++) {
+      for (int col = 0; col < SIZE; col++) {
+        // we search an empty cell
+        if (board[row][col] == 0) {
+          // we try possible numbers
+          for (int number = 1; number <= SIZE; number++) {
+            if (CheckIfSafe(row, col, number)) {
+              // number ok. it respects sudoku constraints
+              board[row][col] = number;
+                if (solve()) { // we start backtracking recursively
+                  return true;
+                } else { // if not a solution, we empty the cell and we continue
+                  board[row][col] = 0;
+                }
+              }
+            }
+
+            return false; // we return false
+          }
+        }
+      }
+
+      return true; // sudoku solved
+    }
+
+
+
+
 
   // Driver code
   public static void main(String[] args) {
@@ -227,6 +257,14 @@ public class Sudoku {
     sudoku.generate();
     sudoku.print();
 
+    System.out.println("Going to solve");
+    long startTime = System.nanoTime();
+    sudoku.solve();
+    long endTime = System.nanoTime();
+
+    long duration = (endTime - startTime);  //divide by 1000000 to get milliseconds.
+    sudoku.print();
+    System.out.println("That took " + duration);
   }
 
 }
