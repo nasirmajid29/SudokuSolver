@@ -25,6 +25,8 @@ public class Sudoku {
   private final int[][] board = new int[SIZE][SIZE];
   private final Difficulty difficulty;
 
+  static int recurse = 0;
+
   // Constructor
   public Sudoku() {
     for (int i = 0; i < SIZE; i++) {
@@ -222,6 +224,7 @@ public class Sudoku {
   }
 
   public boolean solve() {
+    recurse++;
     for (int row = 0; row < SIZE; row++) {
       for (int col = 0; col < SIZE; col++) {
         // we search an empty cell
@@ -260,11 +263,12 @@ public class Sudoku {
     System.out.println("Going to solve");
     long startTime = System.nanoTime();
     sudoku.solve();
+
     long endTime = System.nanoTime();
 
     long duration = (endTime - startTime);  //divide by 1000000 to get milliseconds.
     sudoku.print();
-    System.out.println("That took " + duration);
+    System.out.println(recurse + " recursive calls" );
   }
 
 }
